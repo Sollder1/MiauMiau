@@ -1,4 +1,4 @@
-#Miau Miau
+# Miau Miau
 
 A Open-Source MauMau implementation, indcluding:
 1. A JakartaEE 9.1 backend with websockets
