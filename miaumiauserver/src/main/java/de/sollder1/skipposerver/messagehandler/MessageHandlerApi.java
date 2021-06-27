@@ -21,6 +21,8 @@ public class MessageHandlerApi {
         MESSAGE_HANDLERS.put("startLobby", StartLobbyHandler.class);
         MESSAGE_HANDLERS.put("playCard", PlayCardHandler.class);
         MESSAGE_HANDLERS.put("drawCard", DrawCardHandler.class);
+        MESSAGE_HANDLERS.put("newMessage", ChatMessageHandler.class);
+
     }
 
     public static void handle(String message, Session session) throws JsonProcessingException {

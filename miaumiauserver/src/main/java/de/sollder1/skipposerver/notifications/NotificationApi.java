@@ -6,19 +6,26 @@ import de.sollder1.skipposerver.game.state.lobby.Lobby;
 import de.sollder1.skipposerver.game.state.player.Player;
 import de.sollder1.skipposerver.game.state.player.SessionWrapper;
 import de.sollder1.skipposerver.messagehandler.MessageHandlerApi;
+import de.sollder1.skipposerver.notifications.impl.ChatMessageNotification;
 import de.sollder1.skipposerver.notifications.impl.GameUpdateNotification;
 import de.sollder1.skipposerver.notifications.impl.LobbyNotification;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class NotificationApi {
 
+    //Notify all in Lobby about the joined Player
     public static void notifyAboutJoinedPlayer(Player joinedPlayer, Lobby joinedLobby) {
         String value = getJoinedPlayerNotification(joinedPlayer, joinedLobby);
-        joinedLobby.getPlayers().forEach(player -> player.getSession().send(value));
+        joinedLobby.getPlayers().stream()
+                .filter(player -> !player.getPlayerId().equals(joinedPlayer.getPlayerId()))
+                .forEach(player -> player.getSession().send(value));
     }
 
-    //Used to catch up the user that joined about the current session state
+    //Catch up the palyer that joined aboutr the peple in the lobby
     public static void notifyAboutJoinedPlayer(Player joinedPlayer, Lobby joinedLobby, SessionWrapper target) {
         String value = getJoinedPlayerNotification(joinedPlayer, joinedLobby);
         target.send(value);
@@ -66,6 +73,25 @@ public class NotificationApi {
 
     }
 
+    public static void sendChatMessage(Player player, String chatMessage) {
+        var lobby = player.getCurrentLobby();
+
+        if (lobby != null) {
+            lobby.getPlayers().forEach(playerToSendTo -> playerToSendTo.getSession().send(generateChatMessageNotification(playerToSendTo, chatMessage)));
+        }
+
+    }
+
+    private static String generateChatMessageNotification(Player playerToSendTo, String chatMessage) {
+        ChatMessageNotification notification = new ChatMessageNotification();
+        notification.setEvent("newMessage");
+        notification.setId(UUID.randomUUID().toString());
+        notification.setText(chatMessage);
+        notification.setUsername(playerToSendTo.getPlayerName());
+        notification.setTime((new SimpleDateFormat("hh:mm")).format(new Date()));
+        return writeToString(notification);
+    }
+
     private static String writeToString(Notification notification) {
         try {
             return MessageHandlerApi.OBJECT_MAPPER.writeValueAsString(notification);
@@ -74,6 +100,5 @@ public class NotificationApi {
         }
         return "";
     }
-
 
 }

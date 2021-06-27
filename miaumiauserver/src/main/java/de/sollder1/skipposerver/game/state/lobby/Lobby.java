@@ -67,6 +67,13 @@ public class Lobby {
         return playerCards.get(player);
     }
 
+
+    public synchronized void drawCardAndChangePlayer(Player player) {
+        checkPlayersTurn(player);
+        drawCard(player);
+        changeTurn();
+    }
+
     public synchronized void playCard(Player player, String cardId) {
 
         checkPlayersTurn(player);
@@ -80,11 +87,25 @@ public class Lobby {
         } else {
             throw new RuntimeException("Karte passt nicht!");
         }
+        executeSpecialFeatures(cardToPlay);
     }
 
-    public synchronized void drawCard(Player player) {
-        checkPlayersTurn(player);
+    private void executeSpecialFeatures(Card playedCard) {
 
+        switch (playedCard.getValue()){
+            case SEVEN:
+                drawCard(players.get(this.currentPlayerIndex));
+                drawCard(players.get(this.currentPlayerIndex));
+                break;
+            case EIGHTH:
+                changeTurn();
+                break;
+        }
+
+
+    }
+
+    private void drawCard(Player player) {
         if (drawStack.size() == 0) {
             var topCard = layStack.get(layStack.size()-1);
             drawStack.addAll(layStack);
@@ -98,7 +119,6 @@ public class Lobby {
         }
         var card = drawStack.remove(0);
         playerCards.get(player).add(card);
-        changeTurn();
     }
 
     private void changeTurn() {

@@ -1,0 +1,7 @@
+
+.mau-mau-card{
+    margin: 10px
+}
+.mau-mau-card:hover{
+    transform: scale(1.05);
+}

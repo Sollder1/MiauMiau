@@ -1,3 +1,5 @@
+import ChatMessage from "./ChatMessage";
+
 export interface Notification {
 
     event: string;
@@ -31,4 +33,8 @@ export interface GameUpdateNotification extends Notification {
 
 export interface IssueNotification extends Notification {
     text: string;
+}
+
+export interface ChatMessageNotification extends Notification, ChatMessage {
+
 }

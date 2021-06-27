@@ -34,10 +34,7 @@ public final class Lobbies {
             lobby.addPlayer(player);
 
             NotificationApi.notifyAboutJoinedPlayer(player, lobby);
-
-            lobby.getPlayers().stream()
-                    .filter(p -> !p.getPlayerId().equals(player.getPlayerId()))
-                    .forEach(p -> NotificationApi.notifyAboutJoinedPlayer(p, lobby, player.getSession()));
+            lobby.getPlayers().forEach(p -> NotificationApi.notifyAboutJoinedPlayer(p, lobby, player.getSession()));
         }
 
     }

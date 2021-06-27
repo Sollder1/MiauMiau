@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class Card {
 
-    private CardValue value;
-    private CardFace face;
+    private final CardValue value;
+    private final CardFace face;
 
     public enum CardValue {
         SEVEN, EIGHTH, NINE, TEN, JACK, QUEEN, KING, ACE
@@ -22,12 +22,17 @@ public class Card {
         this.face = face;
     }
 
+    public CardValue getValue() {
+        return value;
+    }
+
     public String getId(){
         return value.name() + "_" + face.name();
     }
 
     public boolean compatible(Card cardToPlay) {
-        return this.face == cardToPlay.face || this.value == cardToPlay.value;
+        return this.face == cardToPlay.face || this.value == cardToPlay.value
+                || cardToPlay.value == CardValue.JACK;
     }
 
 
